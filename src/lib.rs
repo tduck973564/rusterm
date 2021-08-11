@@ -7,7 +7,7 @@
 //!
 //! # Syntax
 //! 
-//! `command string_argument "string argument with spaces" 33 4.8`
+//! `<command> [stringargument] ["string argument with spaces"] [33] [4.8]`
 //!
 //! Note that 33 and 4.8 are two different types, Integer and Float. 
 //!
