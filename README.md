@@ -17,7 +17,7 @@ Note that 33 and 4.8 are two different types, Integer and Float.
 # Examples
 
 ```
-use brc::prelude::*;
+use rusterm::prelude::*;
 
 fn main() {
     let mut command_table: HashMap<String, Command>= HashMap::new();
