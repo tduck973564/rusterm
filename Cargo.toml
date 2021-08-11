@@ -5,6 +5,8 @@ authors = ["Thomas Duckworth <tduck973564@gmail.com>"]
 edition = "2018"
 description = "Library providing a simple, quick command line interpreter for Rust projects."
 license = "GPL-3.0"
+documentation = "https://docs.rs/console/"
+repository = "https://github.com/tduck973564/rusterm"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
