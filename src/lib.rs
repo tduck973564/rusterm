@@ -1,14 +1,14 @@
+use colored::Colorize as Colourise;
+use rustyline::{error::ReadlineError, Editor};
 use std::collections::HashMap;
-use std::error::Error;
-use rustyline::{ Editor, error::ReadlineError };
-use colored::Colorize as Colourise; // CORRECT ENGLISH!!!
+use std::error::Error; // CORRECT ENGLISH!!!
 
 pub mod error;
 pub mod lex;
 mod scan;
 mod tests;
 
-type Command = fn(lex::Arguments) -> Result<(), error::Error>;
+pub type Command = fn(lex::Arguments) -> Result<(), error::Error>;
 
 pub struct Console {
     command_table: HashMap<String, Command>,
@@ -30,13 +30,18 @@ impl Console {
                 Err(ReadlineError::Interrupted) => {
                     println!("Exiting...");
                     break;
-                },
+                }
                 Err(ReadlineError::Eof) => {
                     println!("Exiting...");
                     break;
-                },
+                }
                 Err(x) => {
-                    println!("{}{} {}", "Error while reading input".red().bold(), ":".bold(), x);
+                    println!(
+                        "{}{} {}",
+                        "Error while reading input".red().bold(),
+                        ":".bold(),
+                        x
+                    );
                     break;
                 }
             };
@@ -48,7 +53,9 @@ impl Console {
     pub fn parse(&self, input: String) -> Result<(), Box<dyn Error>> {
         let mut scanned_input = scan::scan(input);
         let function_name = scanned_input.get(0).unwrap_or(&"".to_string()).clone();
-        if !function_name.is_empty() { scanned_input.remove(0); }
+        if !function_name.is_empty() {
+            scanned_input.remove(0);
+        }
         let lexed_input = lex::lex(scanned_input);
         let function = match function_name {
             x if x == *"help" => {
