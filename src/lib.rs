@@ -12,8 +12,8 @@ mod tests;
 pub type Command = fn(lex::Arguments) -> Result<(), error::Error>;
 
 pub struct Console {
-    command_table: HashMap<String, Command>,
-    prompt: String,
+    pub command_table: HashMap<String, Command>,
+    pub prompt: String,
 }
 
 impl Console {
@@ -28,13 +28,14 @@ impl Console {
             let mut rl = Editor::<()>::new();
             let input = match rl.readline(&self.prompt) {
                 Ok(x) if x.is_empty() => continue,
+                Ok(x) if x == *"exit" => break,
                 Ok(x) => x,
                 Err(ReadlineError::Interrupted) => {
-                    println!("Exiting...");
+                    println!("^C");
                     break;
                 }
                 Err(ReadlineError::Eof) => {
-                    println!("Exiting...");
+                    println!("^D");
                     break;
                 }
                 Err(x) => {
@@ -63,7 +64,7 @@ impl Console {
             x if x == *"help" => {
                 self.help();
                 return Ok(());
-            }
+            },
             _ => self.command_table.get_cmd(&function_name)?,
         };
         if let Err(x) = function(lexed_input) {
@@ -77,6 +78,8 @@ impl Console {
         for name in self.command_table.keys() {
             println!("{}", name);
         }
+        println!("help");
+        println!("exit")
     }
 }
 
