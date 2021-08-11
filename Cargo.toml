@@ -1,6 +1,6 @@
 [package]
 name = "rusterm"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Thomas <tduck973564@gmail.com>"]
 edition = "2018"
 description = "Library providing a simple, quick command line interpreter for Rust projects."
