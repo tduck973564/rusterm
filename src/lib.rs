@@ -8,13 +8,15 @@ pub mod lex;
 mod scan;
 mod tests;
 
+type Command = fn(lex::Arguments) -> Result<(), error::Error>;
+
 pub struct Console {
-    command_table: HashMap<String, fn(lex::Arguments) -> Result<(), error::Error>>,
+    command_table: HashMap<String, Command>,
     prompt: String,
 }
 
 impl Console {
-    pub fn new(command_table: HashMap<String, fn(lex::Arguments) -> Result<(), error::Error>>, prompt: &str) -> Console {
+    pub fn new(command_table: HashMap<String, Command>, prompt: &str) -> Console {
         Console {
             command_table,
             prompt: prompt.to_owned(),
@@ -72,8 +74,8 @@ pub trait CommandGet<K, V> {
     fn get_cmd(&self, input: &K) -> Result<&V, error::Error>;
 }
 
-impl CommandGet<String, fn(lex::Arguments) -> Result<(), error::Error>> for HashMap<String, fn(lex::Arguments) -> Result<(), error::Error>> {
-    fn get_cmd(&self, input: &String) -> Result<&fn(lex::Arguments) -> Result<(), error::Error>, error::Error> {
+impl CommandGet<String, Command> for HashMap<String, Command> {
+    fn get_cmd(&self, input: &String) -> Result<&Command, error::Error> {
         self.get(input).ok_or(error::Error::NoSuchCommand)
     }
 }
