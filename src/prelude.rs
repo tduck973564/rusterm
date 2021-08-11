@@ -3,6 +3,6 @@
 
 //! Re-exports for things you need when using this crate.
 
-pub use super::{ Console, lex::* , error::Error as BrcError, Command };
+pub use super::{ Console, lex::* , error::Error as RustermError, Command };
 pub use std::convert::TryInto;
 pub use std::collections::HashMap;

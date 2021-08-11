@@ -23,7 +23,7 @@
 //!     console.run_repl();
 //! }
 //!
-//! fn add(mut args: Arguments) -> Result<(), BrcError> {
+//! fn add(mut args: Arguments) -> Result<(), RustermError> {
 //!     let mut sum = 0;
 //!     for _ in 0..args.len() {
 //!         let arg: i32 = args.pop_arg()?.try_into()?;
@@ -43,7 +43,7 @@
 //! ```
 //! use rusterm::prelude::*;
 //!
-//! fn echo(mut args: Arguments) -> Result<(), BrcError> {
+//! fn echo(mut args: Arguments) -> Result<(), RustermError> {
 //!     let first_argument: String = args.pop_arg()?.try_into()?; // Expects a String, as per the type annotation. You can expect a f64, i32 or String.
 //!     println!("{}", first_argument);
 //!     Ok(())
