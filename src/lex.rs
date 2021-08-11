@@ -7,6 +7,19 @@ pub enum Argument {
     Number(i32),
 }
 
+pub struct Arguments(Vec<Argument>);
+
+impl Arguments {
+    pub fn take_arg(&mut self, index: usize) -> Result<Argument, error::Error> {
+        let value: Result<Argument, error::Error> = match self.0.get(index) {
+            None => Err(error::Error::BadArgumentsLen),
+            Some(x) => Ok(x.clone()),
+        };
+        self.0.remove(index);
+        value
+    }
+}
+
 impl From<String> for Argument {
     fn from(input: String) -> Self {
         Argument::String(input)

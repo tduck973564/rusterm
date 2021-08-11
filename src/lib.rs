@@ -3,8 +3,8 @@ use std::error::Error;
 use rustyline::{ Editor, error::ReadlineError };
 use colored::Colorize as Colourise; // CORRECT ENGLISH!!!
 
-mod error;
-mod lex;
+pub mod error;
+pub mod lex;
 mod scan;
 mod tests;
 
@@ -77,16 +77,5 @@ trait ArgGet {
 impl CommandGet<String, fn(Vec<lex::Argument>)> for HashMap<String, fn(Vec<lex::Argument>)> {
     fn get_cmd(&self, input: &String) -> Result<&fn(Vec<lex::Argument>), error::Error> {
         self.get(input).ok_or(error::Error::NoSuchCommand)
-    }
-}
-
-impl ArgGet for Vec<lex::Argument> {
-    fn take_arg(&mut self, index: usize) -> Result<lex::Argument, error::Error> {
-        let value: Result<lex::Argument, error::Error> = match self.get(index) {
-            None => Err(error::Error::BadArgumentsLen),
-            Some(x) => Ok(x.clone()),
-        };
-        self.remove(index);
-        value
     }
 }
