@@ -27,7 +27,7 @@ impl Console {
                 Err(_) => continue,
             };
             if let Err(x) = self.parse(input) {
-                eprintln!("{}", x)
+                println!("{}", x);
             }
         }
     }
