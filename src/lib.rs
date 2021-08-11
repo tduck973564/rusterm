@@ -9,15 +9,15 @@ mod scan;
 mod tests;
 
 pub struct Console {
-    command_table: HashMap<String, fn(Vec<lex::Argument>)>,
+    command_table: HashMap<String, fn(lex::Arguments) -> Result<(), error::Error>>,
     prompt: String,
 }
 
 impl Console {
-    pub fn new(command_table: HashMap<String, fn(Vec<lex::Argument>)>, prompt: String) -> Console {
+    pub fn new(command_table: HashMap<String, fn(lex::Arguments) -> Result<(), error::Error>>, prompt: &str) -> Console {
         Console {
             command_table,
-            prompt,
+            prompt: prompt.to_owned(),
         }
     }
     pub fn run_repl(&self) {
@@ -45,8 +45,8 @@ impl Console {
     }
     pub fn parse(&self, input: String) -> Result<(), Box<dyn Error>> {
         let mut scanned_input = scan::scan(input);
-        let function_name = scanned_input[0].clone();
-        scanned_input.remove(0);
+        let function_name = scanned_input.get(0).unwrap_or(&"".to_string()).clone();
+        if !function_name.is_empty() { scanned_input.remove(0); }
         let lexed_input = lex::lex(scanned_input);
         let function = match function_name {
             x if x == *"help" => {
@@ -55,7 +55,9 @@ impl Console {
             }
             _ => self.command_table.get_cmd(&function_name)?,
         };
-        function(lexed_input);
+        if let Err(x) = function(lexed_input) {
+            println!("{}", x)
+        }
         Ok(())
     }
 
@@ -66,16 +68,12 @@ impl Console {
     }
 }
 
-trait CommandGet<K, V> {
+pub trait CommandGet<K, V> {
     fn get_cmd(&self, input: &K) -> Result<&V, error::Error>;
 }
 
-trait ArgGet {
-    fn take_arg(&mut self, index: usize) -> Result<lex::Argument, error::Error>;
-}
-
-impl CommandGet<String, fn(Vec<lex::Argument>)> for HashMap<String, fn(Vec<lex::Argument>)> {
-    fn get_cmd(&self, input: &String) -> Result<&fn(Vec<lex::Argument>), error::Error> {
+impl CommandGet<String, fn(lex::Arguments) -> Result<(), error::Error>> for HashMap<String, fn(lex::Arguments) -> Result<(), error::Error>> {
+    fn get_cmd(&self, input: &String) -> Result<&fn(lex::Arguments) -> Result<(), error::Error>, error::Error> {
         self.get(input).ok_or(error::Error::NoSuchCommand)
     }
 }

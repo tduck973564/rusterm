@@ -7,12 +7,12 @@ pub enum Argument {
     Number(i32),
 }
 
-pub struct Arguments(Vec<Argument>);
+pub struct Arguments(pub Vec<Argument>);
 
 impl Arguments {
-    pub fn take_arg(&mut self, index: usize) -> Result<Argument, error::Error> {
+    pub fn pop_arg(&mut self, index: usize) -> Result<Argument, error::Error> {
         let value: Result<Argument, error::Error> = match self.0.get(index) {
-            None => Err(error::Error::BadArgumentsLen),
+            None => return Err(error::Error::BadArgumentsLen),
             Some(x) => Ok(x.clone()),
         };
         self.0.remove(index);
@@ -52,7 +52,7 @@ impl TryFrom<Argument> for i32 {
     }
 }
 
-pub fn lex(input: Vec<String>) -> Vec<Argument> {
+pub fn lex(input: Vec<String>) -> Arguments {
     let mut output: Vec<Argument> = Vec::new();
     for argument in input {
         match argument.parse::<i32>() {
@@ -60,5 +60,5 @@ pub fn lex(input: Vec<String>) -> Vec<Argument> {
             Err(_) => output.push(Argument::String(argument)),
         }
     }
-    output
+    Arguments(output)
 }

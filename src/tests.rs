@@ -21,7 +21,7 @@ fn scan() {
 #[test]
 fn lex() {
     for (right, left) in lex::lex(scan::scan("hh 43 \"Hello, world!\"".to_string()))
-        .iter()
+        .0.iter()
         .zip(vec![
             lex::Argument::String("hh".to_string()),
             lex::Argument::Number(43),
