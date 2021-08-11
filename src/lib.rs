@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::collections::HashMap;
-mod io;
+use rustyline;
+
 mod scan;
 mod lex;
 mod error;
@@ -20,7 +21,11 @@ impl Console {
     }
     pub fn run_repl(&self) {
         loop {
-            let input = io::input(&self.prompt);
+            let mut rl = rustyline::Editor::<()>::new();
+            let input = match rl.readline(&self.prompt) {
+                Ok(x) => x,
+                Err(_) => continue,
+            };
             if let Err(x) = self.parse(input) {
                 eprintln!("{}", x)
             }
@@ -33,10 +38,7 @@ impl Console {
         let lexed_input = lex::lex(scanned_input);
         let function = match function_name {
             x if x == "help".to_string() => { self.help(); return Ok(()) },
-            _ =>  match self.command_table.get(&function_name) {
-                Some(x) => x,
-                None => return Err(Box::new(error::Error::NoSuchCommand))
-            }
+            _ => self.command_table.get_cmd(&function_name)?,
         };
         function(lexed_input);
         Ok(())
@@ -46,5 +48,15 @@ impl Console {
         for (name, _) in &self.command_table {
             println!("{}", name);
         }
+    }
+}
+
+trait CommandGet<K, V> {
+    fn get_cmd(&self, input: &K) -> Result<&V, error::Error>;
+}
+
+impl CommandGet<String, fn(Vec<lex::Arguments>)> for HashMap<String, fn(Vec<lex::Arguments>)> {
+    fn get_cmd(&self, input: &String) -> Result<&fn(Vec<lex::Arguments>), error::Error> {
+        self.get(input).ok_or_else(|| { error::Error::NoSuchCommand } )
     }
 }
