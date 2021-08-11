@@ -20,13 +20,13 @@ fn scan() {
 
 #[test]
 fn lex() {
-    for (right, left) in lex::lex(scan::scan("hh 43 \"Hello, world!\"".to_string()))
-        .0
+    for (right, left) in lex::lex(scan::scan("hh 43 \"Hello, world!\" 3.3".to_string()))
         .iter()
         .zip(vec![
             lex::Argument::String("hh".to_string()),
             lex::Argument::Integer(43),
             lex::Argument::String("Hello, world!".to_string()),
+            lex::Argument::Float(3.3),
         ])
     {
         assert_eq!(right, &left);

@@ -8,18 +8,22 @@ pub enum Argument {
     Float(f64),
 }
 
-pub struct Arguments(pub Vec<Argument>);
+pub trait PopArgument {
+    fn pop_arg(&mut self) -> Result<Argument, error::Error>;
+}
 
-impl Arguments {
-    pub fn pop_arg(&mut self, index: usize) -> Result<Argument, error::Error> {
-        let value: Result<Argument, error::Error> = match self.0.get(index) {
+impl PopArgument for Vec<Argument> {
+    fn pop_arg(&mut self) -> Result<Argument, error::Error> {
+        let value: Result<Argument, error::Error> = match self.get(0) {
             None => return Err(error::Error::BadArgumentsLen),
             Some(x) => Ok(x.clone()),
         };
-        self.0.remove(index);
+        self.remove(0);
         value
     }
 }
+
+pub type Arguments = Vec<Argument>;
 
 impl From<String> for Argument {
     fn from(input: String) -> Self {
@@ -48,7 +52,7 @@ impl TryFrom<Argument> for i32 {
     fn try_from(input: Argument) -> Result<Self, Self::Error> {
         match input {
             Argument::Integer(x) => Ok(x),
-            _ => Err(Self::Error::InvalidArgument),
+            _ => Err(error::Error::InvalidArgument),
         }
     }
 }
@@ -77,5 +81,6 @@ pub fn lex(input: Vec<String>) -> Arguments {
             }),
         }
     }
-    Arguments(output)
+    output
 }
+

@@ -1,10 +1,11 @@
-use colored::Colorize as Colourise;
+use colored::Colorize as Colourise; // CORRECT ENGLISH!!!
 use rustyline::{error::ReadlineError, Editor};
 use std::collections::HashMap;
-use std::error::Error; // CORRECT ENGLISH!!!
+use std::error::Error; 
 
 pub mod error;
 pub mod lex;
+pub mod prelude;
 mod scan;
 mod tests;
 
@@ -26,6 +27,7 @@ impl Console {
         loop {
             let mut rl = Editor::<()>::new();
             let input = match rl.readline(&self.prompt) {
+                Ok(x) if x.is_empty() => continue,
                 Ok(x) => x,
                 Err(ReadlineError::Interrupted) => {
                     println!("Exiting...");
@@ -71,6 +73,7 @@ impl Console {
     }
 
     fn help(&self) {
+        println!("{}", "List of commands:".bold());
         for name in self.command_table.keys() {
             println!("{}", name);
         }
