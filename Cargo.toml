@@ -1,7 +1,9 @@
 [package]
 name = "brc"
 version = "0.1.0"
+authors = ["Thomas Duckworth <tduck973564@gmail.com>"]
 edition = "2018"
+description = "Library providing a simple, quick console for Rust projects."
 license = "GPL-3.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
