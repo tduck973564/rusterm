@@ -11,8 +11,11 @@ use std::fmt; // Smh use correct english
 #[derive(Debug)]
 #[allow(dead_code)]
 pub enum Error {
+    /// The error variant returned when a command is looked up in the command table, but `None` is returned. Occurs when typing a command that has not been put into the command table.
     NoSuchCommand,
+    /// The error variant for when an argument is not of the correct type.
     InvalidArgument,
+    /// The error variant for when not enough arguments were passed to the command. Occurs when popping an empty `Arguments` Vec.
     BadArgumentsLen,
 }
 
@@ -33,7 +36,7 @@ impl fmt::Display for Error {
             ),
             Error::BadArgumentsLen => write!(
                 f,
-                "{}{} You passed too many or too little arguments to the command.",
+                "{}{} You passed too little arguments to the command.",
                 "BadArgumentsLen".red().bold(),
                 ":".bold(),
             ),

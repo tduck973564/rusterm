@@ -6,16 +6,20 @@
 use crate::error;
 use std::convert::TryFrom;
 
-/// The enum containing the different variants of possible arguments.
+/// The enum containing the different variants of possible arguments. Can be converted into `String`, `i32`, or `f64`, depending on the variant.
 #[derive(Debug, PartialEq, Clone)]
 pub enum Argument {
+    /// The string token for arguments, can be converted into `String`.
     String(String),
+    /// The integer token, can be converted into `i32`.
     Integer(i32),
+    /// The float token, can be converted into `f64`.
     Float(f64),
 }
 
 /// For popping the first argument from the `Arguments` Vec, and returning it, or returning an error from `brc::error::Error`. To be used with `try_into()` to convert it to the expected type.
 pub trait PopArgument {
+    /// Pops the first argument from an `Arguments` Vec, and returns it. If it is popped when the vec is empty, `Error::BadArgumentsLen` will be returned.
     fn pop_arg(&mut self) -> Result<Argument, error::Error>;
 }
 

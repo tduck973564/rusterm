@@ -14,7 +14,7 @@
 //! # Examples
 //!
 //! ```
-//! use brc::prelude::*;
+//! use rusterm::prelude::*;
 //!
 //! fn main() {
 //!     let mut command_table: HashMap<String, Command>= HashMap::new();
@@ -34,13 +34,15 @@
 //! }
 //! ```
 //!
-//! # Writing functions that work with the Console
+//! # Writing functions that work as commands
 //!
 //! Every function that you write to be used in the Console must follow this signature: `fn(mut args: brc::lex::Arguments) -> Result<(), brc::error::Error>`.
 //! To use user-inputted arguments in your function, you must continually pop the command arguments from the args parameter, and then convert them into the type you expect.
 //! Example below:
 //!
 //! ```
+//! use rusterm::prelude::*;
+//!
 //! fn echo(mut args: Arguments) -> Result<(), BrcError> {
 //!     let first_argument: String = args.pop_arg()?.try_into()?; // Expects a String, as per the type annotation. You can expect a f64, i32 or String.
 //!     println!("{}", first_argument);
@@ -48,6 +50,8 @@
 //! }
 //! ```
 //!
+
+#![deny(missing_docs)]
 
 use colored::Colorize as Colourise; // CORRECT ENGLISH!!!
 use rustyline::{error::ReadlineError, Editor};
@@ -63,9 +67,11 @@ mod tests;
 /// The type for Commands passed into the Console. All functions passed in must be of type `fn(brc::lex::Arguments) -> Result<(), brc::error::Error>`
 pub type Command = fn(lex::Arguments) -> Result<(), error::Error>;
 
-/// The main constructor owning the console. It contains the command table and the prompt string. The command table is used for aliasing function pointers with names to be looked up later when their alias is typed in to the prompt. The prompt string is the characters that come before input, like `>> ` or `Console -> `.
+/// The main constructor owning the console. It contains the command table and the prompt string.
 pub struct Console {
+    /// Used for aliasing function pointers with names to be looked up later when their alias is typed in to the prompt.
     pub command_table: HashMap<String, Command>,
+    /// The characters that come before input, like `>> ` or `Console -> `.
     pub prompt: String,
 }
 
