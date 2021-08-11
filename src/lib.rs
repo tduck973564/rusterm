@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 use std::error::Error;
+use rustyline::{ Editor, error::ReadlineError };
+use colored::Colorize as Colourise; // CORRECT ENGLISH!!!
 
 mod error;
 mod lex;
@@ -20,10 +22,21 @@ impl Console {
     }
     pub fn run_repl(&self) {
         loop {
-            let mut rl = rustyline::Editor::<()>::new();
+            let mut rl = Editor::<()>::new();
             let input = match rl.readline(&self.prompt) {
                 Ok(x) => x,
-                Err(_) => continue,
+                Err(ReadlineError::Interrupted) => {
+                    println!("Exiting...");
+                    break;
+                },
+                Err(ReadlineError::Eof) => {
+                    println!("Exiting...");
+                    break;
+                },
+                Err(x) => {
+                    println!("{}{} {}", "Error while reading input".red().bold(), ":".bold(), x);
+                    break;
+                }
             };
             if let Err(x) = self.parse(input) {
                 println!("{}", x);
