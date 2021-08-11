@@ -1,5 +1,5 @@
 fn push_string_to(string: &mut String, array: &mut Vec<String>) {
-    if string != "" {
+    if !string.is_empty() {
         array.push(string.to_string())
     }
     *string = "".to_string();
@@ -9,7 +9,7 @@ pub fn scan(input: String) -> Vec<String> {
     let mut current = String::new();
     let mut output: Vec<String> = Vec::new();
     let mut in_quote = false;
-    
+
     for character in input.chars() {
         if in_quote {
             if character == '"' {
@@ -18,7 +18,7 @@ pub fn scan(input: String) -> Vec<String> {
             } else {
                 current += &character.to_string();
             }
-        } else {
+        } else if !in_quote {
             if character == '"' {
                 in_quote = true;
                 push_string_to(&mut current, &mut output);
@@ -30,6 +30,6 @@ pub fn scan(input: String) -> Vec<String> {
         }
     }
     push_string_to(&mut current, &mut output);
-    
+
     output
 }
