@@ -1,7 +1,13 @@
+// Copyright 2021 Thomas Duckworth <tduck973564@gmail.com>.
+// This file is part of the `brc` project, licenced under the GNU GPL v3.0, which can be read here: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+//! Module containing the error enum, and an implementation of `std::error::Error` over it.
+
 use colored::Colorize as Colourise;
 use std::error::Error as ErrorTrait;
 use std::fmt; // Smh use correct english
 
+/// The enum containing all of the different error variants. Implements `std::error::Error`.
 #[derive(Debug)]
 #[allow(dead_code)]
 pub enum Error {
