@@ -54,7 +54,7 @@
 #![deny(missing_docs)]
 
 use colored::Colorize as Colourise; // CORRECT ENGLISH!!!
-use rustyline::{error::ReadlineError, Editor};
+use rustyline::{error::ReadlineError, Editor, Cmd, KeyEvent };
 use std::collections::HashMap;
 use std::error::Error; 
 
@@ -83,24 +83,32 @@ impl Console {
             prompt: prompt.to_owned(),
         }
     }
-    /// Runs the Read, Execute, Print Loop. It displays a prompt where the user can input the command they want, to then be read and parsed. 
+    /// Runs the Read, Execute and Print Loop. It displays a prompt where the user can input the command they want, to then be read and parsed. 
     pub fn run_repl(&self) {
         loop {
             let mut rl = Editor::<()>::new();
+
+            rl.bind_sequence(KeyEvent::ctrl('A'), Cmd::HistorySearchForward);
+            rl.bind_sequence(KeyEvent::ctrl('B'), Cmd::HistorySearchBackward);
+
+            if rl.load_history(".rusterm_history").is_err() {
+                eprintln!("Could not load history file.");
+            }
+
             let input = match rl.readline(&self.prompt) {
                 Ok(x) if x.is_empty() => continue,
                 Ok(x) if x == *"exit" => break,
-                Ok(x) => x,
+                Ok(x) => { rl.add_history_entry(x.clone()); x },
                 Err(ReadlineError::Interrupted) => {
-                    println!("^C");
+                    eprintln!("^C");
                     break;
                 }
                 Err(ReadlineError::Eof) => {
-                    println!("^D");
+                    eprintln!("^D");
                     break;
                 }
                 Err(x) => {
-                    println!(
+                    eprintln!(
                         "{}{} {}",
                         "Error while reading input".red().bold(),
                         ":".bold(),
@@ -110,7 +118,10 @@ impl Console {
                 }
             };
             if let Err(x) = self.parse(input) {
-                println!("{}", x);
+                eprintln!("{}", x);
+            }
+            if rl.append_history(".rusterm_history").is_err() {
+                eprintln!("Could not append to history file.");
             }
         }
     }
