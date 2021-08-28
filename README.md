@@ -16,7 +16,7 @@ Note that 33 and 4.8 are two different types, Integer and Float.
 
 # Examples
 
-```
+```rust
 use rusterm::prelude::*;
 
 fn main() {
@@ -43,7 +43,7 @@ Every function that you write to be used in the Console must follow this signatu
 To use user-inputted arguments in your function, you must continually pop the command arguments from the args parameter, and then convert them into the type you expect.
 Example below:
 
-```
+```rust
 use rusterm::prelude::*;
 
 fn echo(mut args: Arguments) -> Result<(), RustermError> {
