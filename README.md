@@ -44,6 +44,8 @@ To use user-inputted arguments in your function, you must continually pop the co
 Example below:
 
 ```
+use rusterm::prelude::*;
+
 fn echo(mut args: Arguments) -> Result<(), RustermError> {
     let first_argument: String = args.pop_arg()?.try_into()?; // Expects a String, as per the type annotation. You can expect a f64, i32 or String.
     println!("{}", first_argument);
