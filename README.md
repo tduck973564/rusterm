@@ -1,6 +1,6 @@
 # Rusterm
 [![docs](https://docs.rs/rusterm/badge.svg)](https://docs.rs/rusterm)
-[![dependency status](https://deps.rs/crate/rusterm/0.1.2/status.svg)](https://deps.rs/crate/rusterm/0.1.2)
+[![dependency status](https://deps.rs/crate/rusterm/0.2.1/status.svg)](https://deps.rs/crate/rusterm/0.2.1)
 [![build status](https://github.com/tduck973564/rusterm/workflows/Rust/badge.svg)](https://github.com/tduck973564/rusterm/actions)
 
 

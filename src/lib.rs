@@ -1,62 +1,16 @@
-// Copyright 2021 Thomas Duckworth <tduck973564@gmail.com>.
-// This file is part of the `rusterm` project, licenced under the GNU GPL v3.0, which can be read here: https://www.gnu.org/licenses/gpl-3.0.en.html
-
-//! A fast and easy console library.
-//! 
-//! This provides a basic, minimal framework over making a console for applications. 
-//!
-//! # Syntax
-//! 
-//! `<command> [stringargument] ["string argument with spaces"] [33] [4.8]`
-//!
-//! Note that 33 and 4.8 are two different types, Integer and Float. 
-//!
-//! # Examples
-//!
-//! ```
-//! use rusterm::prelude::*;
-//!
-//! fn main() {
-//!     let mut command_table: HashMap<String, Command>= HashMap::new();
-//!     command_table.insert("add".to_string(), add);
-//!     let console = Console::new(command_table, ">> ");
-//!     console.run_repl();
-//! }
-//!
-//! fn add(mut args: Arguments) -> Result<(), RustermError> {
-//!     let mut sum = 0;
-//!     for _ in 0..args.len() {
-//!         let arg: i32 = args.pop_arg()?.try_into()?;
-//!         sum += arg;
-//!     }
-//!     println!("{}", sum);
-//!     Ok(())
-//! }
-//! ```
-//!
-//! # Writing functions that work as commands
-//!
-//! Every function that you write to be used in the Console must follow this signature: `fn(mut args: brc::lex::Arguments) -> Result<(), brc::error::Error>`.
-//! To use user-inputted arguments in your function, you must continually pop the command arguments from the args parameter, and then convert them into the type you expect.
-//! Example below:
-//!
-//! ```
-//! use rusterm::prelude::*;
-//!
-//! fn echo(mut args: Arguments) -> Result<(), RustermError> {
-//!     let first_argument: String = args.pop_arg()?.try_into()?; // Expects a String, as per the type annotation. You can expect a f64, i32 or String.
-//!     println!("{}", first_argument);
-//!     Ok(())
-//! }
-//! ```
-//!
+/*
+ * Copyright (c) 2021 Thomas Duckworth <tduck973564@gmail.com>.
+ * This file is under the `rusterm` project, which is licensed under the GNU GPL v3.0 which you can read here: https://www.gnu.org/licenses/gpl-3.0.en.html
+ */
 
 #![deny(missing_docs)]
+use doc_comment::doc_comment;
+doc_comment!(include_str!("../README.md"));
 
 use colored::Colorize as Colourise; // CORRECT ENGLISH!!!
-use rustyline::{error::ReadlineError, Editor, Cmd, KeyEvent };
+use rustyline::{error::ReadlineError, Cmd, Editor, KeyEvent};
 use std::collections::HashMap;
-use std::error::Error; 
+use std::error::Error;
 
 pub mod error;
 pub mod lex;
@@ -83,7 +37,7 @@ impl Console {
             prompt: prompt.to_owned(),
         }
     }
-    /// Runs the Read, Execute and Print Loop. It displays a prompt where the user can input the command they want, to then be read and parsed. 
+    /// Runs the Read, Execute and Print Loop. It displays a prompt where the user can input the command they want, to then be read and parsed.
     pub fn run_repl(&self) {
         loop {
             let mut rl = Editor::<()>::new();
@@ -98,7 +52,10 @@ impl Console {
             let input = match rl.readline(&self.prompt) {
                 Ok(x) if x.is_empty() => continue,
                 Ok(x) if x == *"exit" => break,
-                Ok(x) => { rl.add_history_entry(x.clone()); x },
+                Ok(x) => {
+                    rl.add_history_entry(x.clone());
+                    x
+                }
                 Err(ReadlineError::Interrupted) => {
                     eprintln!("^C");
                     break;
@@ -136,8 +93,11 @@ impl Console {
             x if x == *"help" => {
                 self.help();
                 return Ok(());
-            },
-            _ => self.command_table.get(&function_name).ok_or(error::Error::NoSuchCommand)?,
+            }
+            _ => self
+                .command_table
+                .get(&function_name)
+                .ok_or(error::Error::NoSuchCommand)?,
         };
         if let Err(x) = function(lexed_input) {
             println!("{}", x)
